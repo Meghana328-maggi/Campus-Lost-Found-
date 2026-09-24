@@ -1,0 +1,31 @@
+{
+  "name": "campus-lost-and-found",
+  "version": "1.0.0",
+  "description": "Comprehensive MERN Stack Campus Lost & Found Platform",
+  "main": "server/src/server.js",
+  "scripts": {
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "node ./node_modules/concurrently/dist/bin/cli.js --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "seed": "cd server && npm run seed",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "test": "npm run test:server"
+  },
+  "keywords": [
+    "mern",
+    "lost-and-found",
+    "campus",
+    "react",
+    "nodejs",
+    "mongodb",
+    "express",
+    "socketio"
+  ],
+  "author": "Campus Lost & Found Team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
