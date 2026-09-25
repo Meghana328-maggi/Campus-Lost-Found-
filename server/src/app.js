@@ -22,6 +22,9 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
+// Trust proxy for Render reverse proxy environment
+app.set('trust proxy', 1);
+
 // Security headers with relaxation for cross-origin image embedding
 app.use(
   helmet({

@@ -61,19 +61,32 @@ const login = async (req, res, next) => {
       return sendError(res, 400, 'Please provide both email and password.');
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    const identifier = (email || '').trim();
+    // Allow login by email, student ID, or case-insensitive name
+    const user = await User.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { studentId: identifier },
+        { name: new RegExp(`^${identifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+      ],
+    }).select('+password');
 
     if (!user) {
-      return sendError(res, 401, 'Invalid email or password.');
+      return sendError(res, 401, 'No account found matching this email or username. Please check your spelling or register.');
     }
 
     if (user.isBlocked) {
       return sendError(res, 403, 'Your account has been suspended by campus administration.');
     }
 
-    const isMatch = await user.comparePassword(password);
+    // Try both raw and trimmed password to handle accidental whitespace
+    let isMatch = await user.comparePassword(password);
+    if (!isMatch && password.trim() !== password) {
+      isMatch = await user.comparePassword(password.trim());
+    }
+
     if (!isMatch) {
-      return sendError(res, 401, 'Invalid email or password.');
+      return sendError(res, 401, 'Incorrect password. Please verify your password and try again.');
     }
 
     const token = user.generateAuthToken();
