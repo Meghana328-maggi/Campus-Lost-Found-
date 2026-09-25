@@ -42,6 +42,9 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     const res = await api.post('/auth/register', userData);
+    if (!res.data || !res.data.data) {
+      throw new Error(res.data?.message || 'Received unexpected response from server.');
+    }
     const { user: registeredUser, token: receivedToken } = res.data.data;
     setUser(registeredUser);
     setToken(receivedToken);

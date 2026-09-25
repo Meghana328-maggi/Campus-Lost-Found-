@@ -10,21 +10,27 @@ const register = async (req, res, next) => {
   try {
     const { name, email, password, phone, college, department, year, studentId } = req.body;
 
+    if (!name || !email || !password) {
+      return sendError(res, 400, 'Please provide name, email, and password.');
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
+    const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
-      return sendError(res, 400, 'An account with this email address already exists.');
+      return sendError(res, 400, 'An account with this email address already exists. Please log in.');
     }
 
     const user = await User.create({
       name: name.trim(),
-      email: email.toLowerCase().trim(),
+      email: cleanEmail,
       password,
-      phone: phone || '',
-      college: college || 'Campus University',
-      department: department || 'General',
+      phone: phone ? phone.trim() : '',
+      college: college ? college.trim() : 'Campus University',
+      department: department ? department.trim() : 'General',
       year: year || '1st Year',
-      studentId: studentId || '',
+      studentId: studentId ? studentId.trim() : '',
     });
 
     const token = user.generateAuthToken();

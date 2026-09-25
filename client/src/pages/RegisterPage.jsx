@@ -49,7 +49,16 @@ export default function RegisterPage() {
       success('Account registered successfully! Welcome to Campus Lost & Found.');
       navigate('/');
     } catch (err) {
-      error(err.response?.data?.message || 'Registration failed. Email may already be in use.');
+      const serverMessage = err.response?.data?.message;
+      if (serverMessage) {
+        error(serverMessage);
+      } else if (err.response?.status === 502 || err.response?.status === 503) {
+        error('Backend server is spinning up or temporarily unavailable (502/503). Please wait a moment and try again.');
+      } else if (err.message) {
+        error(err.message);
+      } else {
+        error('Registration failed. Please check your connection and try again.');
+      }
     } finally {
       setSubmitting(false);
     }

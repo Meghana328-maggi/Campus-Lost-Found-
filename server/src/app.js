@@ -54,12 +54,28 @@ app.use('/api', apiLimiter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  const mongoose = require('mongoose');
+  const isConnected = mongoose.connection.readyState === 1;
   res.status(200).json({
     success: true,
-    status: 'healthy',
+    status: isConnected ? 'healthy' : 'degraded',
+    database: isConnected ? 'connected' : 'disconnected',
     message: 'Campus Lost & Found Platform API is running smoothly.',
     timestamp: new Date().toISOString(),
   });
+});
+
+// Database connectivity guard for API operations
+app.use('/api', (req, res, next) => {
+  const mongoose = require('mongoose');
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection is currently initializing or unavailable. Please ensure MONGO_URI is set in Render environment variables.',
+      errors: ['Database connection unavailable'],
+    });
+  }
+  next();
 });
 
 // API Routes
