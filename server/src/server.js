@@ -13,6 +13,7 @@ const { Server } = require('socket.io');
 const app = require('./app');
 const connectDB = require('./config/db');
 const { initSocketIO } = require('./sockets/socketManager');
+const { isOriginAllowed } = require('./config/corsOptions');
 
 const PORT = process.env.PORT || 5000;
 
@@ -22,10 +23,16 @@ connectDB();
 // Create HTTP server
 const server = http.createServer(app);
 
-// Setup Socket.IO
+// Setup Socket.IO with cross-origin support
 const io = new Server(server, {
   cors: {
-    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:3000'],
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin) || process.env.NODE_ENV !== 'production') {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS not allowed for Socket.IO origin'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },

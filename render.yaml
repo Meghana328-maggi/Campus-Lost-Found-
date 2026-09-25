@@ -23,9 +23,9 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: CLIENT_URL
-        sync: false
+        value: https://campus-lost-found.vercel.app
       - key: SERVER_URL
-        sync: false
+        value: https://campus-lost-and-found-server.onrender.com
       # Cloudinary (Recommended for persistent image storage on Render free tier)
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
