@@ -1,4 +1,13 @@
-require('dotenv').config();
+// Safely load environment variables from .env file if dotenv is available.
+// In production (Render, Heroku, etc.), variables are supplied directly via platform environment variables.
+try {
+  const path = require('path');
+  const dotenv = require('dotenv');
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+  dotenv.config(); // Fallback to current working directory
+} catch (err) {
+  // Dotenv is optional in production where environment variables are injected into process.env
+}
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');

@@ -1,4 +1,11 @@
-require('dotenv').config();
+try {
+  const path = require('path');
+  const dotenv = require('dotenv');
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config();
+} catch (err) {
+  // Dotenv is optional in production
+}
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Item = require('../models/Item');

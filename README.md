@@ -366,9 +366,14 @@ npm test
 5. Environment Variable: Set `VITE_API_BASE_URL` to your production backend URL.
 
 ### Backend (Render / Railway / VPS)
-1. Set the root directory to `server`.
-2. Build Command: `npm install`.
-3. Start Command: `npm start` (or `node src/server.js`).
+
+**Option 1: Using Render Blueprint (Zero-Config)**
+- A [render.yaml](file:///d:/Lost%20&%20Found%20Platform/render.yaml) is included at the root of the project. When creating a new service on Render, select **Blueprint** or connect the repository. Render will automatically apply the configuration (`rootDir: server`, `buildCommand: npm install`, `startCommand: npm start`).
+
+**Option 2: Manual Web Service Setup on Render**
+1. **Root Directory**: `server` *(Recommended)*, or leave blank (the root `package.json` now includes `postinstall` and `build` fallback scripts to build the server automatically).
+2. **Build Command**: `npm install`
+3. **Start Command**: `npm start` (or `node src/server.js` if root directory is `server`, or `npm start` from root).
 4. Configure all environment variables in your hosting dashboard:
    - `MONGO_URI` (MongoDB Atlas connection string)
    - `JWT_SECRET`
