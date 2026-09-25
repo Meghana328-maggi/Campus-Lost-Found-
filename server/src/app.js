@@ -53,13 +53,13 @@ app.use('/uploads', express.static(uploadsPath));
 app.use('/api', apiLimiter);
 
 // Health check endpoint
+const { getDbStatus } = require('./config/db');
 app.get('/api/health', (req, res) => {
-  const mongoose = require('mongoose');
-  const isConnected = mongoose.connection.readyState === 1;
+  const dbInfo = getDbStatus();
   res.status(200).json({
     success: true,
-    status: isConnected ? 'healthy' : 'degraded',
-    database: isConnected ? 'connected' : 'disconnected',
+    status: dbInfo.status === 'connected' ? 'healthy' : 'degraded',
+    database: dbInfo,
     message: 'Campus Lost & Found Platform API is running smoothly.',
     timestamp: new Date().toISOString(),
   });

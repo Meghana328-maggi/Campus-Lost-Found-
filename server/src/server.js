@@ -11,7 +11,7 @@ try {
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/db');
 const { initSocketIO } = require('./sockets/socketManager');
 const { isOriginAllowed } = require('./config/corsOptions');
 
