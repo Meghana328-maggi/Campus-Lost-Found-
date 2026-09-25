@@ -18,8 +18,10 @@ const AuditLog = require('../models/AuditLog');
 const { DEFAULT_CATEGORIES, CAMPUS_ZONES, ITEM_STATUSES, CLAIM_STATUSES } = require('../config/constants');
 
 const seedData = async () => {
-  try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/campus_lost_found';
+    let mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/campus_lost_found';
+    if (mongoUri.startsWith('mongodb+srv://') && !mongoUri.includes('.mongodb.net/')) {
+      mongoUri = mongoUri.replace('.mongodb.net', '.mongodb.net/campus_lost_found?retryWrites=true&w=majority');
+    }
     await mongoose.connect(mongoUri);
     console.log('[Seed] Connected to MongoDB...');
 
